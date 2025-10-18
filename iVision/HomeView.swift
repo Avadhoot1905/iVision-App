@@ -16,56 +16,125 @@ struct HomeView: View {
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                VStack {
-                    Spacer().frame(height: 15)
+                VStack(spacing: 0) {
+                    // Modern Header
                     HStack {
-                        Text("iVision")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                        Spacer().frame(width:195)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("iVision")
+                                .font(.system(size: 34, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                            Text("Eye Health Assistant")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
+                        Spacer()
                         Button(action: {
                             // Navigate to Profile page
                         }) {
-                            Image(systemName: "person.crop.circle")
+                            Image(systemName: "person.crop.circle.fill")
                                 .resizable()
-                                .frame(width: 32, height: 32)
+                                .frame(width: 40, height: 40)
                                 .foregroundColor(.white)
+                                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                         }
-                        .padding()
                     }
-                    .padding(.top, 10)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 20)
+                    .padding(.bottom, 10)
 
-                    ZStack {
-                        Rectangle()
-                            .fill(Color.green.opacity(0.2))
-                            .frame(height: 300)
-                            .cornerRadius(12)
-                            .padding(.horizontal)
-                        
+                    // Modern Image Upload Card
+                    VStack(spacing: 16) {
                         if let image = selectedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxHeight: 280)
-                                .cornerRadius(12)
-                        } else {
-                            VStack {
+                            // Image Preview with modern styling
+                            VStack(spacing: 12) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 300)
+                                    .frame(maxWidth: .infinity)
+                                    .clipped()
+                                    .cornerRadius(20)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                    .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 4)
+                                
+                                // Change Image Button
                                 Button(action: {
                                     showImagePicker = true
                                 }) {
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .foregroundColor(.white)
-                                }
-                                Text("Upload Image")
-                                    .font(.headline)
+                                    HStack {
+                                        Image(systemName: "photo.badge.plus")
+                                            .font(.system(size: 16, weight: .semibold))
+                                        Text("Change Image")
+                                            .font(.system(size: 16, weight: .semibold))
+                                    }
                                     .foregroundColor(.white)
+                                    .padding(.horizontal, 24)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        Capsule()
+                                            .fill(Color.white.opacity(0.25))
+                                            .overlay(
+                                                Capsule()
+                                                    .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                            )
+                                    )
+                                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                }
+                            }
+                        } else {
+                            // Upload Placeholder with modern design
+                            Button(action: {
+                                showImagePicker = true
+                            }) {
+                                VStack(spacing: 20) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.white.opacity(0.25))
+                                            .frame(width: 100, height: 100)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                                            )
+                                        
+                                        Image(systemName: "camera.fill")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 45, height: 45)
+                                            .foregroundColor(.white)
+                                    }
+                                    
+                                    VStack(spacing: 8) {
+                                        Text("Upload Eye Image")
+                                            .font(.system(size: 22, weight: .bold))
+                                            .foregroundColor(.white)
+                                        Text("Tap to select an image from your library")
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(.white.opacity(0.8))
+                                            .multilineTextAlignment(.center)
+                                    }
+                                }
+                                .frame(height: 300)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color.white.opacity(0.15))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .stroke(Color.white.opacity(0.3), lineWidth: 1.5)
+                                                .strokeBorder(
+                                                    style: StrokeStyle(lineWidth: 2, dash: [8, 8])
+                                                )
+                                        )
+                                )
+                                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                             }
                         }
                     }
-                    .padding(.top)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 8)
                     .sheet(isPresented: $showImagePicker) {
                         ImagePicker(image: $selectedImage) { image in
                             showImagePicker = false
@@ -76,18 +145,36 @@ struct HomeView: View {
                             }
                         }
                     }
-                    Spacer().frame(height: 30)
-                    Text("Previous Entries")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(.top)
-                    EntryListView(entries: [
-                        "Entry 1 - 27 Sept 2025",
-                        "Entry 2 - 20 Sept 2025",
-                        "Entry 3 - 10 Sept 2025",
-                        "Entry 4 - 5 Sept 2025"
-                    ])
-                    Spacer()
+                    
+                    // Previous Entries Section with modern design
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Previous Entries")
+                                    .font(.system(size: 22, weight: .bold))
+                                    .foregroundColor(.white)
+                                Text("View your diagnosis history")
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.7))
+                            }
+                            Spacer()
+                            Image(systemName: "clock.arrow.circlepath")
+                                .font(.system(size: 20))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.top, 24)
+                        
+                        EntryListView(entries: [
+                            "Entry 1 - 27 Sept 2025",
+                            "Entry 2 - 20 Sept 2025",
+                            "Entry 3 - 10 Sept 2025",
+                            "Entry 4 - 5 Sept 2025"
+                        ])
+                        .padding(.horizontal, 16)
+                    }
+                    
+                    Spacer(minLength: 20)
                 }
             }
             .navigationDestination(isPresented: $navigateToDiagnosis) {
@@ -133,36 +220,62 @@ struct ImagePicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 }
 
-// EntryListView remains unchanged
+// EntryListView with modern design
 struct EntryListView: View {
     let entries: [String]
-    @State private var hoveredIndex: Int? = nil
 
     var body: some View {
-        List {
+        VStack(spacing: 12) {
             ForEach(entries.indices, id: \.self) { index in
                 Button(action: {
                     // Handle entry selection
                 }) {
-                    Text(entries[index])
-                        .foregroundColor(.black)
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .listRowBackground(Color.green.opacity(0.01))
-                .scaleEffect(hoveredIndex == index ? 1.05 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: hoveredIndex == index)
-                .onHover { hovering in
-                    if hovering {
-                        hoveredIndex = index
-                    } else if hoveredIndex == index {
-                        hoveredIndex = nil
+                    HStack {
+                        // Icon
+                        ZStack {
+                            Circle()
+                                .fill(Color.white.opacity(0.2))
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "doc.text.image")
+                                .font(.system(size: 18))
+                                .foregroundColor(.white)
+                        }
+                        
+                        // Entry Text
+                        Text(entries[index])
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
+                        
+                        Spacer()
+                        
+                        // Chevron
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.6))
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.15))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                    )
+                    .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
                 }
+                .buttonStyle(ScaleButtonStyle())
             }
         }
-        .frame(maxHeight: 300)
-        .listStyle(PlainListStyle())
+    }
+}
+
+// Custom button style for scale effect
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
     }
 }
