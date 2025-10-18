@@ -261,24 +261,32 @@ struct DiagnosisView: View {
     }
     
     private func startDiagnosis() {
-            guard let image = image else {
-                processingError = "No image provided"
-                return
-            }
-            
-            isProcessing = true
-            processingError = nil
-            
-            coreMLService.classifyImage(image) { result in
-                DispatchQueue.main.async {
-                    isProcessing = false
-                    switch result {
-                    case .success(let prediction):
-                        diagnosis = prediction
-                    case .failure(let error):
-                        processingError = error.localizedDescription
-                    }
+        print("📸 DiagnosisView: Starting diagnosis...")
+        
+        guard let image = image else {
+            print("❌ DiagnosisView: No image provided")
+            processingError = "No image provided"
+            return
+        }
+        
+        print("✅ DiagnosisView: Image received, size: \(image.size)")
+        isProcessing = true
+        processingError = nil
+        diagnosis = ""
+        
+        print("🔄 DiagnosisView: Calling CoreML service...")
+        coreMLService.classifyImage(image) { result in
+            DispatchQueue.main.async {
+                self.isProcessing = false
+                switch result {
+                case .success(let prediction):
+                    print("✅ DiagnosisView: Received prediction: \(prediction)")
+                    self.diagnosis = prediction
+                case .failure(let error):
+                    print("❌ DiagnosisView: Classification failed: \(error.localizedDescription)")
+                    self.processingError = error.localizedDescription
                 }
             }
         }
+    }
     }

@@ -46,3 +46,9 @@ Package.resolved
 
 # CocoaPods
 Pods/
+
+# CoreML Models (exclude old/test models, keep only the production model)
+iVision/MyModel.mlpackage/
+Test/*.mlmodel
+conversion/*.mlmodel
+*.pth
